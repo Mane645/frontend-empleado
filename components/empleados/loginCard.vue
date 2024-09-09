@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    loginBackend () {
+    async loginBackend () {
       console.log('@@@ Variable', this.usuario, this.password)
       const isvalid = this.$refs.form.validate()
       if (isvalid) {
@@ -51,6 +51,23 @@ export default {
           correo: this.usuario,
           contrasena: this.password
         }
+
+        // Login con auth
+        await this.$auth.loginWith('local', {
+          data: body
+        }).then((res) => {
+          this.$emit('show-alert', {
+            showAlert: true,
+            color: 'green',
+            type: 'success',
+            message: 'Has iniciado sesion',
+            icon: 'mdi-success'
+          })
+          this.$router.push('/dashboard')
+        }).catch((error) => {
+          console.error('@@@ error => ', error)
+        })
+        /*
         this.$axios.post('/login', body)
           .then((res) => {
             console.log('@@ res => ', res)
@@ -58,6 +75,7 @@ export default {
           .catch((error) => {
             console.error('@@@ error => ', error)
           })
+        */
       } else {
         this.$emit('show-alert', {
           showAlert: true,
